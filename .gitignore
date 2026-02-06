@@ -187,4 +187,3 @@ fabric.properties
 
 ./users/migrations/
 ./dogs/migrations/
-./users/migrations
