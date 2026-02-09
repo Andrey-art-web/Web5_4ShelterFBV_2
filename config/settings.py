@@ -5,6 +5,8 @@ Django settings for config project.
 import os
 from pathlib import Path
 
+from django.conf.global_settings import MEDIA_ROOT
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-h3juwn^%y@-jiwjtib&1y7&_8ba$%tqr043s&q%v@0lg*a_duv'
@@ -92,6 +94,15 @@ LANGUAGE_CODE = 'ru-ru'
 USE_I18N = True
 
 STATIC_URL = 'static/'
+STATIC_DIRS = (
+    BASE_DIR / 'static',
+)
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = (
+    BASE_DIR / 'media'
+)
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
