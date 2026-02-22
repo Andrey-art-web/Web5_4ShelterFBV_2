@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
@@ -14,12 +14,19 @@ def index(request):
     return render(request, 'dogs/index.html', context)
 
 
+# def breeds_list_view(request):
+#     context = {
+#         'objects_list': Breed.objects.all(),
+#         'title': 'Питомник - Все наши породы'
+#     }
+#     return render(request, 'dogs/breeds.html', context)
 def breeds_list_view(request):
+    objects_list = Breed.objects.all()  # или ваша модель пород
     context = {
-        'objects_list': Breed.objects.all(),
-        'title': 'Питомник - Все наши породы'
+        'title': 'Питомник - Главная',
+        'objects_list': objects_list,
     }
-    return render(request, 'dogs/breeds.html', context)
+    return render(request, 'dogs/index.html', context)
 
 
 def breeds_dogs_list_view(request, pk: int):
@@ -51,14 +58,71 @@ def dogs_list_view(request):
 #             'form': DogForm()
 #         }
 #         return render(request, 'dogs/create.html', {})
+# def dog_create_view(request):
+#     if request.method == 'POST':
+#         form = DogForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponseRedirect(reverse('dogs:dogs_list'))
+#     context = {
+#         'title': 'Добавить собаку',
+#         'form': DogForm()  # Используем form, а не DogForm() для сохранения данных при ошибках
+#     }
+#     return render(request, 'dogs/create.html', {})
+# СТАЛО (ПРАВИЛЬНО):
 def dog_create_view(request):
     if request.method == 'POST':
         form = DogForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('dogs:dogs_list'))
+    else:
+        form = DogForm()
+
     context = {
         'title': 'Добавить собаку',
-        'form': DogForm()  # Используем form, а не DogForm() для сохранения данных при ошибках
+        'form': form
     }
-    return render(request, 'dogs/create.html', {})
+    # return render(request, 'dogs/dog_create.html', context)
+    return render(request, 'dogs/create.html', context)
+
+
+def dog_detail_view(request, pk):
+    # dog_object = Dog.objects.get(pk=pk)
+    dog_object = get_object_or_404(Dog, pk=pk)
+    context = {
+        'object': dog_object,
+        'title': f'Вы выбрали: {dog_object}'
+        # 'title': f'Вы выбрали: {dog_object.name}. Порода: {dog_object.breed_name}',
+    }
+    return render(request, 'dogs/detail.html', context)
+
+
+def dog_update_view(request, pk):
+    dog_object = get_object_or_404(Dog, pk=pk)
+    if request.method == 'POST':
+        form = DogForm(request.POST, request.FILES, instance=dog_object)
+        if form.is_valid():
+            dog_object = form.save()
+            dog_object.save()
+            return HttpResponseRedirect(reverse('dogs:dog_detail', args={pk: pk}))
+    context = {
+        'title': 'Изменить собаку',
+        'object': dog_object,
+        'form': DogForm(instance=dog_object)
+    }
+    return render(request, 'dogs/update.html', context)
+
+
+def dog_delete_view(request, pk):
+    dog_object = get_object_or_404(Dog, pk=pk)
+    if request.method == 'POST':
+        dog_object.delete()
+        return HttpResponseRedirect(reverse('dogs:dogs_list'))
+
+    context = {
+        'title': 'Удалить собаку',
+        'object': dog_object,
+    }
+
+    return render(request, 'dogs/delete.html')
