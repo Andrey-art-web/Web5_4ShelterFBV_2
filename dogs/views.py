@@ -125,4 +125,4 @@ def dog_delete_view(request, pk):
         'object': dog_object,
     }
 
-    return render(request, 'dogs/delete.html')
+    return render(request, 'dogs/delete.html', context)
