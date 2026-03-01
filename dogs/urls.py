@@ -18,4 +18,5 @@ urlpatterns = [
     path('dogs/detail/<int:pk>/', dog_detail_view, name='dog_detail'),
     path('dogs/update/<int:pk>/', dog_update_view, name='dog_update'),
     path('dogs/delete/<int:pk>/', dog_delete_view, name='dog_delete'),
+
 ]

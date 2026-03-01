@@ -41,7 +41,7 @@ def breeds_dogs_list_view(request, pk: int):
 
 def dogs_list_view(request):
     context = {
-        'object': Dog.objects.all(),
+        'objects_list': Dog.objects.all(),
         'title': 'Питомник все наши собаки'
     }
     return render(request, 'dogs/dogs.html', context)
@@ -70,6 +70,21 @@ def dogs_list_view(request):
 #     }
 #     return render(request, 'dogs/create.html', {})
 # СТАЛО (ПРАВИЛЬНО):
+# def dog_create_view(request):
+#     if request.method == 'POST':
+#         form = DogForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponseRedirect(reverse('dogs:dogs_list'))
+#     else:
+#         form = DogForm()
+#
+#     context = {
+#         'title': 'Добавить собаку',
+#         'form': form
+#     }
+    # return render(request, 'dogs/dog_create.html', context)
+    # return render(request, 'dogs/create_update.html', context)
 def dog_create_view(request):
     if request.method == 'POST':
         form = DogForm(request.POST, request.FILES)
@@ -83,7 +98,7 @@ def dog_create_view(request):
         'title': 'Добавить собаку',
         'form': form
     }
-    # return render(request, 'dogs/dog_create.html', context)
+    # ИСПРАВЛЕНО: меняем create_update.html на create.html
     return render(request, 'dogs/create.html', context)
 
 
@@ -92,26 +107,42 @@ def dog_detail_view(request, pk):
     dog_object = get_object_or_404(Dog, pk=pk)
     context = {
         'object': dog_object,
-        'title': f'Вы выбрали: {dog_object}'
-        # 'title': f'Вы выбрали: {dog_object.name}. Порода: {dog_object.breed_name}',
+        # 'title': f'Вы выбрали: {dog_object}'
+        'title': f'Вы выбрали: {dog_object.name}. Порода: {dog_object.breed_name}',
     }
     return render(request, 'dogs/detail.html', context)
 
 
+# def dog_update_view(request, pk):
+#     dog_object = get_object_or_404(Dog, pk=pk)
+#     if request.method == 'POST':
+#         form = DogForm(request.POST, request.FILES, instance=dog_object)
+#         if form.is_valid():
+#             dog_object = form.save()
+#             dog_object.save()
+#             return HttpResponseRedirect(reverse('dogs:dog_detail', args={pk: pk}))
+#     context = {
+#         'title': 'Изменить собаку',
+#         'object': dog_object,
+#         'form': DogForm(instance=dog_object)
+#     }
+#     return render(request, 'dogs/update.html', context)
 def dog_update_view(request, pk):
     dog_object = get_object_or_404(Dog, pk=pk)
     if request.method == 'POST':
         form = DogForm(request.POST, request.FILES, instance=dog_object)
         if form.is_valid():
             dog_object = form.save()
-            dog_object.save()
-            return HttpResponseRedirect(reverse('dogs:dog_detail', args={pk: pk}))
+            return HttpResponseRedirect(reverse('dogs:dog_detail', args=[pk]))  # ИСПРАВЛЕНО: args=[pk]
+    else:
+        form = DogForm(instance=dog_object)  # ДОБАВЛЕНО: else для GET запроса
+
     context = {
         'title': 'Изменить собаку',
         'object': dog_object,
-        'form': DogForm(instance=dog_object)
+        'form': form  # ИСПРАВЛЕНО: используем form, а не DogForm()
     }
-    return render(request, 'dogs/update.html', context)
+    return render(request, 'dogs/create.html', context)  # ИСПРАВЛЕНО: используем create.html
 
 
 def dog_delete_view(request, pk):

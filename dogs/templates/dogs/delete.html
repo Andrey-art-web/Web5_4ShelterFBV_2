@@ -1,10 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'dogs/base.html' %}
+{% load my_tags %}
 
-</body>
-</html>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Удаление собаки</h4>
+            </div>
+
+            <div class="card-body text-center">
+                <img class="card-img-top mb-3"
+                     src="{{ object.photo|dogs_media }}"
+                     style="max-width: 300px; max-height: 320px; object-fit: cover; border-radius: 8px; margin: 0 auto;"
+                     alt="{{ object.name }}">
+
+                <h5 class="card-title mt-3">{{ object.name|title }}</h5>
+
+                {% if object.breed %}
+                <p class="card-text">Порода: {{ object.breed.name }}</p>
+                {% endif %}
+
+                {% if object.age %}
+                <p class="card-text">Возраст: {{ object.age }} лет</p>
+                {% endif %}
+
+                <p class="text-danger fw-bold mt-4 fs-5">
+                    Вы уверены, что хотите удалить собаку?
+                </p>
+
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="submit" class="btn btn-danger px-4 py-2">
+                            <i class="bi bi-trash"></i> Да, удалить
+                        </button>
+                        <a href="{% url 'dogs:dogs_list' %}" class="btn btn-secondary px-4 py-2">
+                            <i class="bi bi-x-circle"></i> Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
