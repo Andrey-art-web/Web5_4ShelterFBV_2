@@ -39,3 +39,8 @@ class UserRegisterForm(forms.ModelForm):
 class UserLoginForm(forms.Form):
     email = forms.EmailField(label="email")
     password = forms.CharField(label='пароль', widget=forms.PasswordInput)
+
+
+class UserForm(forms.ModelForm):
+    model = User
+    fields = ('email', 'first_name', 'last_name', 'phone')
