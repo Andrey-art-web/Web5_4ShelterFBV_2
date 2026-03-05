@@ -5,7 +5,7 @@ Django settings for config project.
 import os
 from pathlib import Path
 
-from django.conf.global_settings import MEDIA_ROOT
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,6 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'dogs',
+    # Сторонние приложения
+    # 'bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -71,8 +73,14 @@ DATABASES = {
 USE_TZ = False  # ← ОБЯЗАТЕЛЬНО!
 
 # ========== ВАЖНЫЕ НАСТРОЙКИ ДЛЯ SQL SERVER ==========
-USE_TZ = False  # ДОЛЖНО БЫТЬ False для SQL Server!
 TIME_ZONE = 'Europe/Moscow'
+
+# DATABASES = {
+#    'default': {
+#    'ENGINE': 'django.db.backends.sqlite3',
+#    'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+# }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
